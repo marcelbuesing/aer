@@ -2,9 +2,9 @@
 // needs to be run with sudo because of some sysfs_gpio permission problems and follow-up timing problems
 // see https://github.com/rust-embedded/rust-sysfs-gpio/issues/5 and follow-up issues
 
+use aer::*;
 use anyhow::Result;
 use core::time::Duration;
-use nidus::*;
 use std::thread;
 
 fn main() {
@@ -44,25 +44,25 @@ fn run() -> Result<()> {
     spi.configure(&options).expect("spi configuration");
 
     // Configure Digital I/O Pin to be used as Chip Select for SPI
-    let cs = Pin::new(26); //BCM7 CE0
+    let cs = Pin::new(8); //BCM7 CE0
     cs.export().expect("cs export");
     while !cs.is_exported() {}
     cs.set_direction(Direction::Out).expect("CS Direction");
     cs.set_value(1).expect("CS Value set to 1");
 
-    let busy = Pin::new(5); //pin 29
+    let busy = Pin::new(24); //pin 29
     busy.export().expect("busy export");
     while !busy.is_exported() {}
     busy.set_direction(Direction::In).expect("busy Direction");
     //busy.set_value(1).expect("busy Value set to 1");
 
-    let dc = Pin::new(6); //pin 31 //bcm6
+    let dc = Pin::new(25); //pin 31 //bcm6
     dc.export().expect("dc export");
     while !dc.is_exported() {}
     dc.set_direction(Direction::Out).expect("dc Direction");
     dc.set_value(1).expect("dc Value set to 1");
 
-    let rst = Pin::new(16); //pin 36 //bcm16
+    let rst = Pin::new(17); //pin 36 //bcm16
     rst.export().expect("rst export");
     while !rst.is_exported() {}
     rst.set_direction(Direction::Out).expect("rst Direction");
@@ -76,7 +76,7 @@ fn run() -> Result<()> {
     let mut display = DisplayEPD::default();
 
     let i2c = I2cdev::new("/dev/i2c-1").expect("i2cdev device");
-    let mut bme = Bme680::init(i2c, Delay {}, I2CAddress::Secondary).expect("i2cdev device");
+    let mut bme = Bme680::init(i2c, Delay {}, I2CAddress::Primary).expect("i2cdev device");
 
     let settings = SettingsBuilder::new()
         .with_humidity_oversampling(OversamplingSetting::OS2x)

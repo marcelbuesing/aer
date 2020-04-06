@@ -16,7 +16,10 @@ pub fn weather<T: DrawTarget<BinaryColor>>(display: &mut T) {
             return;
         }
     };
-    info!("In {}, {} it is {}°C", weather.name, weather.sys.country, weather.main.temp);
+    info!(
+        "In {}, {} it is {}°C",
+        weather.name, weather.sys.country, weather.main.temp
+    );
     draw_temp(display, weather.main.temp);
 
     #[cfg(feature = "epd4in2")]
@@ -73,7 +76,7 @@ fn draw_sunset<T: DrawTarget<BinaryColor>>(
             sunset.hour(),
             sunset.minute()
         ),
-        (width() / 2 - 80i32, 0).into(),
+        (width() / 2 - 90i32, 0).into(),
     );
 }
 

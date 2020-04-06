@@ -25,6 +25,7 @@ dependencies = [
  "linux-embedded-hal",
  "log",
  "openweather",
+ "profont",
  "tokio",
 ]
 
@@ -1020,6 +1021,14 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "df246d292ff63439fea9bc8c0a270bed0e390d5ebd4db4ba15aba81111b5abe3"
 dependencies = [
  "unicode-xid",
+]
+
+[[package]]
+name = "profont"
+version = "0.3.0"
+source = "git+https://github.com/marcelbuesing/profont.git?branch=embedded-graphics-0.6#21bef2174c30c0c1de73d5ea2b1ac8900736bf5e"
+dependencies = [
+ "embedded-graphics",
 ]
 
 [[package]]

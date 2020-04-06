@@ -10,6 +10,11 @@ use embedded_graphics::{
     style::{PrimitiveStyle, Styled},
     text_style, DrawTarget,
 };
+use profont::ProFont10Point;
+use profont::ProFont12Point;
+use profont::ProFont14Point;
+use profont::ProFont24Point;
+use profont::ProFont9Point;
 
 mod weather;
 pub use weather::*;
@@ -58,18 +63,18 @@ pub fn text_6x8<T: DrawTarget<BinaryColor>>(display: &mut T, text: &str, top_lef
 
 /// Doesn't support as many different ascii chars
 pub fn text_6x12<T: DrawTarget<BinaryColor>>(display: &mut T, text: &str, top_left: Point) {
-    draw_text(display, text, top_left, Font6x12);
+    draw_text(display, text, top_left, ProFont12Point);
 }
 
 pub fn text_8x16<T: DrawTarget<BinaryColor>>(display: &mut T, text: &str, top_left: Point) {
-    draw_text(display, text, top_left, Font8x16);
+    draw_text(display, text, top_left, ProFont12Point);
 }
 
 pub fn text_12x16<T: DrawTarget<BinaryColor>>(display: &mut T, text: &str, top_left: Point) {
-    draw_text(display, text, top_left, Font12x16);
+    draw_text(display, text, top_left, ProFont14Point);
 }
 pub fn text_24x32<T: DrawTarget<BinaryColor>>(display: &mut T, text: &str, top_left: Point) {
-    draw_text(display, text, top_left, Font24x32);
+    draw_text(display, text, top_left, ProFont24Point);
 }
 
 pub fn draw_text<T: DrawTarget<BinaryColor>, F: Copy + Font>(

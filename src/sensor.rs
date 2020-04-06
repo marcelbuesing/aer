@@ -1,5 +1,6 @@
 use crate::*;
 use anyhow::Result;
+
 #[cfg(not(feature = "simulator"))]
 use bme680::{Bme680, *};
 #[cfg(not(feature = "simulator"))]
@@ -67,7 +68,7 @@ fn draw_sensor<T: DrawTarget<BinaryColor>>(
     pressure: f32,
     gas_resistance: u32,
 ) {
-    text_24x32(display, &format!("{:5.1}°C", temp), (0, 100).into());
+    text_24x32(display, &format!("{:5.1}°C", temp), (0, 110).into());
     text_8x16(
         display,
         &format!(
