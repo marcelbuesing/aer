@@ -13,9 +13,10 @@ anyhow = "1.0.27"
 bme680 = "0.5.0"
 chrono = "0.4.9"
 dotenv = "0.15.0"
-embedded-graphics = { version = "0.6.0"}
+embedded-graphics = { version = "0.6.1"}
 embedded-graphics-simulator = {version = "0.2.0", optional = true}
 embedded-hal = {version = "0.2.3", features = ["unproven"]}
+embedded-weather-icons = { git = "https://github.com/marcelbuesing/embedded-weather-icons.git", branch = "master", features = ["icons32x32"] }
 env_logger = "0.7.1"
 epd-waveshare = "0.4.0"
 futures-executor = {version = "0.3.4"}
@@ -24,7 +25,8 @@ lazy_static = "1.4.0"
 linux-embedded-hal = "0.3.0"
 log = "0.4.8"
 openweather = { git = "https://github.com/caemor/openweather"}
-profont = { git = "https://github.com/marcelbuesing/profont.git", branch = "embedded-graphics-0.6" }
+profont = "0.4"
+tinybmp = { version = "0.2", features = ["graphics"] }
 tokio = "0.2.13"
 
 

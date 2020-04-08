@@ -17,6 +17,7 @@ dependencies = [
  "embedded-graphics",
  "embedded-graphics-simulator",
  "embedded-hal",
+ "embedded-weather-icons",
  "env_logger",
  "epd-waveshare",
  "futures-executor",
@@ -26,6 +27,7 @@ dependencies = [
  "log",
  "openweather",
  "profont",
+ "tinybmp",
  "tokio",
 ]
 
@@ -307,6 +309,14 @@ checksum = "ee4908a155094da7723c2d60d617b820061e3b4efcc3d9e293d206a5a76c170b"
 dependencies = [
  "nb",
  "void",
+]
+
+[[package]]
+name = "embedded-weather-icons"
+version = "0.1.0"
+source = "git+https://github.com/marcelbuesing/embedded-weather-icons.git#3d06aa09fdcc9076ba91ea87921ceddbc2214633"
+dependencies = [
+ "tinybmp",
 ]
 
 [[package]]
@@ -870,6 +880,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "nom"
+version = "5.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0b471253da97532da4b61552249c521e01e736071f71c1a4f7ebbfbf0a06aad6"
+dependencies = [
+ "memchr",
+ "version_check",
+]
+
+[[package]]
 name = "num"
 version = "0.1.42"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1025,8 +1045,9 @@ dependencies = [
 
 [[package]]
 name = "profont"
-version = "0.3.0"
-source = "git+https://github.com/marcelbuesing/profont.git?branch=embedded-graphics-0.6#21bef2174c30c0c1de73d5ea2b1ac8900736bf5e"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7f2f6adcc3c0b616b2075b492b29404966c1de661d68fad58698f8dfb133e25b"
 dependencies = [
  "embedded-graphics",
 ]
@@ -1585,6 +1606,16 @@ dependencies = [
  "libc",
  "redox_syscall",
  "winapi 0.3.8",
+]
+
+[[package]]
+name = "tinybmp"
+version = "0.2.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5c6946e37d7f018ce9428cf200b5fa4a43cef3c6deb7eed84dfa13d17bca8063"
+dependencies = [
+ "embedded-graphics",
+ "nom",
 ]
 
 [[package]]

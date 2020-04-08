@@ -1,7 +1,16 @@
 use crate::*;
 use embedded_graphics::transform::Transform;
-use embedded_graphics::{drawable::Drawable, geometry::Point, pixelcolor::BinaryColor, DrawTarget};
+use embedded_graphics::{
+    drawable::{Drawable, Pixel},
+    geometry::Point,
+    image::Image,
+    pixelcolor::BinaryColor,
+    pixelcolor::{Rgb565, RgbColor},
+    DrawTarget,
+};
+use embedded_weather_icons as icons;
 use log::*;
+use tinybmp::Bmp;
 
 fn tmp_graph_height() -> i32 {
     120
@@ -86,6 +95,25 @@ pub fn weather_forecast<T: DrawTarget<BinaryColor>>(display: &mut T, current_tem
             temps.push(h3_slot.main.temp);
         }
         debug!("Day {}: Min: {} | Max: {}", day + 1, min, max);
+        // TODO cleanup
+        let image: &Bmp<'static> = weather::WEATHER_ICONS
+            .get(&day_list.get(0).unwrap().weather.get(0).unwrap().id)
+            .unwrap();
+        Image::new(image, Point::zero())
+            .translate(Point::new(pos_x(day, 4) - 30, height() - 30))
+            .into_iter()
+            .map(|Pixel(p, c)| {
+                Pixel(
+                    p,
+                    match c {
+                        Rgb565::WHITE => BinaryColor::Off,
+                        Rgb565::BLACK => BinaryColor::On,
+                        _ => panic!("Unexpected color in image"),
+                    },
+                )
+            })
+            .draw(display);
+
         text_6x8(
             display,
             &format!("{:6.2}°C\n{:6.2}°C", min, max),

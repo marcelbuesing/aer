@@ -1,7 +1,35 @@
-use embedded_graphics::{pixelcolor::BinaryColor, DrawTarget};
-// use epd_waveshare::prelude::*;
+use std::collections::HashMap;
+use embedded_weather_icons as icons;
 use crate::*;
 use log::*;
+use tinybmp::Bmp;
+use lazy_static::lazy_static;
+
+// use embedded_graphics::{pixelcolor::BinaryColor, DrawTarget, image::{Image, ImageRaw}, pixelcolor::Rgb888, prelude::*, drawable::{Drawable, Pixel}};
+use embedded_graphics::{
+    drawable::{Drawable, Pixel},
+    geometry::{Dimensions, Point, Size},
+    image::Image,
+    mock_display::MockDisplay,
+    pixelcolor::{BinaryColor, Gray8, GrayColor, Rgb555, Rgb565, Rgb888, RgbColor},
+    primitives::Rectangle,
+    transform::Transform,
+};
+
+
+lazy_static! {
+    pub static ref WEATHER_ICONS: HashMap<u32, Bmp<'static>> = {
+        let mut m = HashMap::new();
+        m.insert(200, icons::wi_thunderstorm_32x32().unwrap());
+        m.insert(800, icons::wi_day_sunny_32x32().unwrap());
+        m.insert(801, icons::wi_cloudy_gusts_32x32().unwrap());
+        m.insert(802, icons::wi_cloudy_gusts_32x32().unwrap());
+        m.insert(803, icons::wi_cloudy_gusts_32x32().unwrap());
+        m.insert(804, icons::wi_cloudy_gusts_32x32().unwrap());
+        m.insert(900, icons::wi_tornado_32x32().unwrap());
+        m
+    };
+}
 
 pub fn weather<T: DrawTarget<BinaryColor>>(display: &mut T) {
     debug!("Weather report current");
