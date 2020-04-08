@@ -76,7 +76,7 @@ fn draw_temp<T: DrawTarget<BinaryColor>>(display: &mut T, temp: f32) {
     text_24x32(
         display,
         &format!("{:5.1}°C", temp),
-        (width() - 7 * 24, 100).into(),
+        (width() - 7 * 24, 110).into(),
     );
 }
 
