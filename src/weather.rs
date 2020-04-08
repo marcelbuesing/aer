@@ -1,9 +1,9 @@
-use std::collections::HashMap;
-use embedded_weather_icons as icons;
 use crate::*;
-use log::*;
-use tinybmp::Bmp;
+use embedded_weather_icons as icons;
 use lazy_static::lazy_static;
+use log::*;
+use std::collections::HashMap;
+use tinybmp::Bmp;
 
 // use embedded_graphics::{pixelcolor::BinaryColor, DrawTarget, image::{Image, ImageRaw}, pixelcolor::Rgb888, prelude::*, drawable::{Drawable, Pixel}};
 use embedded_graphics::{
@@ -15,7 +15,6 @@ use embedded_graphics::{
     primitives::Rectangle,
     transform::Transform,
 };
-
 
 lazy_static! {
     pub static ref WEATHER_ICONS: HashMap<u32, Bmp<'static>> = {
@@ -48,7 +47,11 @@ pub fn weather<T: DrawTarget<BinaryColor>>(display: &mut T) {
         "In {}, {} it is {}°C",
         weather.name, weather.sys.country, weather.main.temp
     );
-    draw_temp(display, weather.main.temp);
+    draw_temp(
+        display,
+        weather.main.temp,
+        weather.weather.get(0).unwrap().id,
+    );
 
     #[cfg(feature = "epd4in2")]
     weather_forecast(display, weather.main.temp);
@@ -72,7 +75,23 @@ fn sunrise_and_sunset<T: DrawTarget<BinaryColor>>(display: &mut T, sunrise: i64,
 }
 
 #[cfg(feature = "epd4in2")]
-fn draw_temp<T: DrawTarget<BinaryColor>>(display: &mut T, temp: f32) {
+fn draw_temp<T: DrawTarget<BinaryColor>>(display: &mut T, temp: f32, weather_id: u32) {
+    let image: &Bmp<'static> = weather::WEATHER_ICONS.get(&weather_id).unwrap();
+    Image::new(image, Point::zero())
+        .translate((width() - 7 * 24 - 26, 110).into())
+        .into_iter()
+        .map(|Pixel(p, c)| {
+            Pixel(
+                p,
+                match c {
+                    Rgb565::WHITE => BinaryColor::Off,
+                    Rgb565::BLACK => BinaryColor::On,
+                    _ => panic!("Unexpected color in image"),
+                },
+            )
+        })
+        .draw(display);
+
     text_24x32(
         display,
         &format!("{:5.1}°C", temp),
