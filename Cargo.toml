@@ -44,6 +44,8 @@ simulator = ["embedded-graphics-simulator"]
 [profile.release]
 codegen-units=1
 
+[package.metadata.deb.variants.epd2in9]
+features = ["epd2in9"]
 
-
-
+[package.metadata.deb.variants.epd4in2]
+features = ["epd4in2"]
