@@ -20,6 +20,8 @@ fn run() -> Result<()> {
     use epd_waveshare::epd2in9::{Display2in9 as DisplayEPD, EPD2in9 as EPD};
     #[cfg(feature = "epd4in2")]
     use epd_waveshare::epd4in2::{Display4in2 as DisplayEPD, EPD4in2 as EPD};
+    #[cfg(feature = "epd7in5")]
+    use epd_waveshare::epd7in5::{Display7in5 as DisplayEPD, EPD7in5 as EPD};
     use epd_waveshare::prelude::*;
     use linux_embedded_hal::*;
     use linux_embedded_hal::{

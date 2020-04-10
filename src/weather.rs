@@ -107,7 +107,7 @@ pub fn weather<T: DrawTarget<BinaryColor>>(display: &mut T) {
         weather.weather.get(0).unwrap().id,
     );
 
-    #[cfg(feature = "epd4in2")]
+    #[cfg(any(feature = "epd4in2", feature = "epd7in5"))]
     weather_forecast(display, weather.main.temp);
 
     sunrise_and_sunset(
@@ -128,7 +128,7 @@ fn sunrise_and_sunset<T: DrawTarget<BinaryColor>>(display: &mut T, sunrise: i64,
     draw_sunset(display, sunrise, sunset);
 }
 
-#[cfg(feature = "epd4in2")]
+#[cfg(any(feature = "epd4in2", feature = "epd7in5"))]
 fn draw_temp<T: DrawTarget<BinaryColor>>(display: &mut T, temp: f32, weather_id: u32) {
     let image: &Bmp<'static> = weather::WEATHER_ICONS.get(&weather_id).unwrap();
     Image::new(image, Point::zero())
@@ -162,7 +162,7 @@ fn draw_temp<T: DrawTarget<BinaryColor>>(display: &mut T, temp: f32) {
     );
 }
 
-#[cfg(feature = "epd4in2")]
+#[cfg(any(feature = "epd4in2", feature = "epd7in5"))]
 fn draw_sunset<T: DrawTarget<BinaryColor>>(
     display: &mut T,
     sunrise: DateTime<Local>,

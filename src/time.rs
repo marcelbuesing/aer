@@ -8,7 +8,7 @@ pub fn time<T: DrawTarget<BinaryColor>>(display: &mut T) {
     draw(display, local);
 }
 
-#[cfg(feature = "epd4in2")]
+#[cfg(any(feature = "epd4in2", feature = "epd7in5"))]
 fn draw<T: DrawTarget<BinaryColor>>(display: &mut T, local: DateTime<Local>) {
     // date and day
     text_8x16(

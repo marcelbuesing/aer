@@ -18,9 +18,9 @@ use profont::ProFont9Point;
 
 mod weather;
 pub use weather::*;
-#[cfg(feature = "epd4in2")]
+#[cfg(any(feature = "epd4in2", feature = "epd7in5"))]
 mod forecast;
-#[cfg(feature = "epd4in2")]
+#[cfg(any(feature = "epd4in2", feature = "epd7in5"))]
 pub use forecast::*;
 mod sensor;
 pub use sensor::*;
@@ -36,6 +36,8 @@ pub fn height() -> i32 {
     return epd_waveshare::epd2in9::WIDTH as i32;
     #[cfg(feature = "epd4in2")]
     return epd_waveshare::epd4in2::HEIGHT as i32;
+    #[cfg(feature = "epd7in5")]
+    return epd_waveshare::epd7in5::HEIGHT as i32;
 }
 
 pub fn width() -> i32 {
@@ -43,6 +45,8 @@ pub fn width() -> i32 {
     return epd_waveshare::epd2in9::HEIGHT as i32;
     #[cfg(feature = "epd4in2")]
     return epd_waveshare::epd4in2::WIDTH as i32;
+    #[cfg(feature = "epd7in5")]
+    return epd_waveshare::epd7in5::WIDTH as i32;
 }
 
 pub fn style_def() -> PrimitiveStyle<BinaryColor> {

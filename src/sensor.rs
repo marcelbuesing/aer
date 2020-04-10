@@ -60,7 +60,7 @@ where
     Ok(())
 }
 
-#[cfg(feature = "epd4in2")]
+#[cfg(any(feature = "epd4in2", feature = "epd7in5"))]
 fn draw_sensor<T: DrawTarget<BinaryColor>>(
     display: &mut T,
     temp: f32,
