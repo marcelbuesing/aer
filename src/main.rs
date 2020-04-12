@@ -118,7 +118,9 @@ fn run() -> Result<()> {
     display.set_rotation(DisplayRotation::Rotate90);
 
     loop {
-        weather(&mut display);
+        if let Err(e) = weather(&mut display) {
+            error("weather update & display", e);
+        }
 
         time(&mut display);
 
@@ -147,10 +149,12 @@ pub fn run() -> Result<()> {
         //.theme(BinaryColorTheme::LcdWhite)
         .scale(1)
         .build();
-    let mut window = Window::new("Nidus", &output_settings);
+    let mut window = Window::new("Aer", &output_settings);
 
     'running: loop {
-        weather(&mut display);
+        if let Err(e) = weather(&mut display) {
+            error("weather", e);
+        }
 
         time(&mut display);
 

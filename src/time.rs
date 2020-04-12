@@ -8,7 +8,7 @@ pub fn time<T: DrawTarget<BinaryColor>>(display: &mut T) {
     draw(display, local);
 }
 
-#[cfg(any(feature = "epd4in2", feature = "epd7in5"))]
+#[cfg(feature = "epd4in2")]
 fn draw<T: DrawTarget<BinaryColor>>(display: &mut T, local: DateTime<Local>) {
     // date and day
     text_8x16(
@@ -61,5 +61,34 @@ fn draw<T: DrawTarget<BinaryColor>>(display: &mut T, local: DateTime<Local>) {
             //local.second()
         ),
         (width() / 2 - 60i32, height() / 3).into(),
+    );
+}
+
+#[cfg(feature = "epd7in5")]
+fn draw<T: DrawTarget<BinaryColor>>(display: &mut T, local: DateTime<Local>) {
+    // date and day
+    // text_6x8(
+    //     display,
+    //     &format!(
+    //         //TODO: use 24:36
+    //         "{:2}:{:02}", //" {:02}s ",
+    //         local.hour(),
+    //         local.minute(),
+    //         //local.second()
+    //     ),
+    //     (width() - 40, height() / 2 - 10).into(),
+    // );
+
+    // time
+    text_12x16(
+        display,
+        &format!(
+            "{:3} {:4}/{:02}/{:02}",
+            daystr(&local.weekday()),
+            local.year(),
+            local.month(),
+            local.day()
+        ),
+        (10, 0).into(),
     );
 }

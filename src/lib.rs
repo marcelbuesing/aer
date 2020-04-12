@@ -10,11 +10,9 @@ use embedded_graphics::{
     style::{PrimitiveStyle, Styled},
     text_style, DrawTarget,
 };
-use profont::ProFont10Point;
 use profont::ProFont12Point;
 use profont::ProFont14Point;
 use profont::ProFont24Point;
-use profont::ProFont9Point;
 
 mod weather;
 pub use weather::*;

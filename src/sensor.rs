@@ -60,7 +60,7 @@ where
     Ok(())
 }
 
-#[cfg(any(feature = "epd4in2", feature = "epd7in5"))]
+#[cfg(feature = "epd4in2")]
 fn draw_sensor<T: DrawTarget<BinaryColor>>(
     display: &mut T,
     temp: f32,
@@ -103,5 +103,30 @@ fn draw_sensor<T: DrawTarget<BinaryColor>>(
             humidity,
         ),
         (0, 0).into(),
+    );
+}
+
+#[cfg(feature = "epd7in5")]
+fn draw_sensor<T: DrawTarget<BinaryColor>>(
+    display: &mut T,
+    temp: f32,
+    humidity: f32,
+    pressure: f32,
+    gas_resistance: u32,
+) {
+    text_24x32(
+        display,
+        &format!("{:5.1}°C", temp),
+        (width() - 7 * 26, 110).into(),
+    );
+    text_8x16(
+        display,
+        &format!(
+            "{:<7.2}%\n{:<7.2}hPa\n{:<7.2}kOhm",
+            humidity,
+            pressure,
+            gas_resistance as f32 / 1000.0,
+        ),
+        (width() - 7 * 24, 50).into(),
     );
 }
