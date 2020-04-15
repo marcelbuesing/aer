@@ -20,8 +20,8 @@ fn run() -> Result<()> {
     use epd_waveshare::epd2in9::{Display2in9 as DisplayEPD, EPD2in9 as EPD};
     #[cfg(feature = "epd4in2")]
     use epd_waveshare::epd4in2::{Display4in2 as DisplayEPD, EPD4in2 as EPD};
-    #[cfg(feature = "epd7in5")]
-    use epd_waveshare::epd7in5::{Display7in5 as DisplayEPD, EPD7in5 as EPD};
+    #[cfg(feature = "epd7in5bc")]
+    use epd_waveshare::epd7in5bc::{Display7in5bc as DisplayEPD, EPD7in5bc as EPD};
     use epd_waveshare::prelude::*;
     use linux_embedded_hal::*;
     use linux_embedded_hal::{
@@ -76,6 +76,8 @@ fn run() -> Result<()> {
 
     println!("Test all the rotations");
     let mut display = DisplayEPD::default();
+    #[cfg(feature = "epd7in5bc")]
+    let mut chromatic_display = DisplayEPD::default();
 
     let i2c = I2cdev::new("/dev/i2c-1").expect("i2cdev device");
     let mut bme = Bme680::init(i2c, Delay {}, I2CAddress::Primary).expect("i2cdev device");
@@ -118,22 +120,37 @@ fn run() -> Result<()> {
     display.set_rotation(DisplayRotation::Rotate90);
 
     loop {
-        if let Err(e) = weather(&mut display) {
+        if let Err(e) = weather(&mut display, &mut chromatic_display) {
             error("weather update & display", e);
         }
 
         time(&mut display);
 
-        if let Err(e) = sensor(&mut display, &mut bme) {
+        if let Err(e) = sensor(&mut display, &mut chromatic_display, &mut bme) {
             error("sensor reading", e);
         }
 
-        if let Err(e) = epd.update_and_display_frame(&mut spi, &display.buffer()) {
-            error("epd update & display", e);
+        // #[cfg(not(feature = "epd7in5bc"))]
+        // {
+        // if let Err(e) = epd.update_and_display_frame(&mut spi, &display.buffer()) {
+        //     error("epd update & display", e);
+        // }
+        // }
+
+        // #[cfg(feature = "epd7in5bc")]
+        // {
+        if let Err(e) =
+            epd.update_color_frame(&mut spi, &display.buffer(), &chromatic_display.buffer())
+        {
+            error("epd update", e);
+        }
+        // }
+
+        if let Err(e) = epd.display_frame(&mut spi) {
+            error("epd display", e);
         }
 
-        //thread::sleep(Duration::from_millis(3000));
-        thread::sleep(Duration::from_secs(60));
+        thread::sleep(*REFRESH_FREQUENCY);
     }
 }
 

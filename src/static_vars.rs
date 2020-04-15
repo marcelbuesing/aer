@@ -3,6 +3,8 @@ use influx_db_client::{Client, Value};
 use lazy_static::lazy_static;
 use openweather::LocationSpecifier;
 use openweather::{Language, Settings, Unit};
+use std::time::Duration;
+
 // const SETTINGS: &Settings = &Settings {
 //     unit: Some(Unit::Metric),
 //     lang: Some(Language::German),
@@ -50,4 +52,8 @@ lazy_static! {
     pub static ref DISPLAY: Value = Value::String(
         dotenv::var("DISPLAY").expect("get display name key from .env file"),
     );
+    pub static ref REFRESH_FREQUENCY: Duration = {
+        let frequency = dotenv::var("REFRESH_FREQUENCY_SECONDS").expect("get refresh frequency seconds name key from .env file");
+        Duration::from_secs(frequency.parse().expect("Invalid refresh frequency"))
+    };
 }

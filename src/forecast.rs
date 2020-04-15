@@ -12,12 +12,12 @@ use embedded_graphics::{
 use log::*;
 use tinybmp::Bmp;
 
-#[cfg(not(feature = "epd7in5"))]
+#[cfg(not(feature = "epd7in5bc"))]
 fn tmp_graph_height() -> i32 {
     120
 }
 
-#[cfg(feature = "epd7in5")]
+#[cfg(feature = "epd7in5bc")]
 fn tmp_graph_height() -> i32 {
     160
 }
@@ -32,13 +32,13 @@ fn scale(min: i32, max: i32) -> i32 {
     }
 }
 
-#[cfg(not(feature = "epd7in5"))]
+#[cfg(not(feature = "epd7in5bc"))]
 fn pos_x(day: usize, slot: usize) -> i32 {
     let mul = 10;
     (day * 8 + slot) as i32 * mul
 }
 
-#[cfg(feature = "epd7in5")]
+#[cfg(feature = "epd7in5bc")]
 fn pos_x(day: usize, slot: usize) -> i32 {
     let mul = 20;
     (day * 8 + slot) as i32 * mul
@@ -73,8 +73,12 @@ impl Range {
     }
 }
 
-#[cfg(not(feature = "epd7in5"))]
-pub fn weather_forecast<T: DrawTarget<BinaryColor>>(display: &mut T, current_temp: f32) {
+#[cfg(not(feature = "epd7in5bc"))]
+pub fn weather_forecast<T1: DrawTarget<BinaryColor>, T2: DrawTarget<BinaryColor>>(
+    display: &mut T1,
+    chromatic_display: &mut T2,
+    current_temp: f32,
+) {
     let forecast = match openweather::get_5_day_forecast(
         &WEATHER_LOCATION,
         &OPENWEATHER_API_KEY,
@@ -178,9 +182,10 @@ pub fn weather_forecast<T: DrawTarget<BinaryColor>>(display: &mut T, current_tem
     }
 }
 
-#[cfg(feature = "epd7in5")]
-pub fn weather_forecast<T: DrawTarget<BinaryColor>>(
-    display: &mut T,
+#[cfg(feature = "epd7in5bc")]
+pub fn weather_forecast<T1: DrawTarget<BinaryColor>, T2: DrawTarget<BinaryColor>>(
+    display: &mut T1,
+    chromatic_display: &mut T2,
     current_temp: f32,
 ) -> Result<()> {
     let forecast = openweather::get_5_day_forecast(
@@ -234,7 +239,7 @@ pub fn weather_forecast<T: DrawTarget<BinaryColor>>(
         let dt = Utc.timestamp(dt as i64, 0);
 
         text_8x16(
-            display,
+            chromatic_display,
             &format!("{}", dt.weekday()),
             (pos_x(day, 4), height() - 70).into(),
         );
@@ -267,7 +272,7 @@ pub fn weather_forecast<T: DrawTarget<BinaryColor>>(
             (pos_x(0, counter + 1), r.pos_y(*temp)).into(),
         )
         .translate((basic_x_offset, height()).into())
-        .draw(display);
+        .draw(chromatic_display);
         prev_temp = *temp;
     }
 

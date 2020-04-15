@@ -64,7 +64,7 @@ fn draw<T: DrawTarget<BinaryColor>>(display: &mut T, local: DateTime<Local>) {
     );
 }
 
-#[cfg(feature = "epd7in5")]
+#[cfg(feature = "epd7in5bc")]
 fn draw<T: DrawTarget<BinaryColor>>(display: &mut T, local: DateTime<Local>) {
     // date and day
     // text_6x8(

@@ -102,7 +102,10 @@ fn cardinal_wind_direction(degree: f32) -> Result<&'static str> {
     }
 }
 
-pub fn weather<T: DrawTarget<BinaryColor>>(display: &mut T) -> Result<()> {
+pub fn weather<T1: DrawTarget<BinaryColor>, T2: DrawTarget<BinaryColor>>(
+    display: &mut T1,
+    chromatic_display: &mut T2,
+) -> Result<()> {
     debug!("Weather report current");
     let weather = openweather::get_current_weather(
         &WEATHER_LOCATION,
@@ -114,10 +117,10 @@ pub fn weather<T: DrawTarget<BinaryColor>>(display: &mut T) -> Result<()> {
         "In {}, {} it is {}°C",
         weather.name, weather.sys.country, weather.main.temp
     );
-    draw_temp(display, &weather)?;
+    draw_temp(display, chromatic_display, &weather)?;
 
-    #[cfg(any(feature = "epd4in2", feature = "epd7in5"))]
-    weather_forecast(display, weather.main.temp)?;
+    #[cfg(any(feature = "epd4in2", feature = "epd7in5bc"))]
+    weather_forecast(display, chromatic_display, weather.main.temp)?;
 
     sunrise_and_sunset(
         display,
@@ -146,8 +149,9 @@ fn sunrise_and_sunset<T: DrawTarget<BinaryColor>>(
 }
 
 #[cfg(feature = "epd4in2")]
-fn draw_temp<T: DrawTarget<BinaryColor>>(
-    display: &mut T,
+fn draw_temp<T1: DrawTarget<BinaryColor>, T2: DrawTarget<BinaryColor>>(
+    display: &mut T1,
+    chromatic_display: &mut T2,
     temp: f32,
     weather_id: u32,
 ) -> Result<()> {
@@ -177,8 +181,9 @@ fn draw_temp<T: DrawTarget<BinaryColor>>(
 }
 
 #[cfg(feature = "epd2in9")]
-fn draw_temp<T: DrawTarget<BinaryColor>>(
-    display: &mut T,
+fn draw_temp<T1: DrawTarget<BinaryColor>, T2: DrawTarget<BinaryColor>>(
+    display: &mut T1,
+    chromatic_display: &mut T2,
     temp: f32,
     weather_id: u32,
 ) -> Result<()> {
@@ -191,9 +196,10 @@ fn draw_temp<T: DrawTarget<BinaryColor>>(
     Ok(())
 }
 
-#[cfg(feature = "epd7in5")]
-fn draw_temp<T: DrawTarget<BinaryColor>>(
-    display: &mut T,
+#[cfg(feature = "epd7in5bc")]
+fn draw_temp<T1: DrawTarget<BinaryColor>, T2: DrawTarget<BinaryColor>>(
+    display: &mut T1,
+    chromatic_display: &mut T2,
     weather_report: &WeatherReportCurrent,
 ) -> Result<()> {
     let weather = weather_report.weather.get(0).unwrap();
@@ -212,11 +218,11 @@ fn draw_temp<T: DrawTarget<BinaryColor>>(
                 },
             )
         })
-        .draw(display)
+        .draw(chromatic_display)
         .map_err(|_| anyhow!("Failed to draw weather icon"))?;
 
     text_24x32(
-        display,
+        chromatic_display,
         &format!("{:5.1}°C", weather_report.main.temp),
         (34, 110).into(),
     );
@@ -285,7 +291,7 @@ fn draw_sunset<T: DrawTarget<BinaryColor>>(
     Ok(())
 }
 
-#[cfg(feature = "epd7in5")]
+#[cfg(feature = "epd7in5bc")]
 fn draw_sunset<T: DrawTarget<BinaryColor>>(
     display: &mut T,
     sunrise: DateTime<Local>,

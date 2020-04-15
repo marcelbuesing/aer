@@ -23,8 +23,9 @@ pub fn sensor<T: DrawTarget<BinaryColor>>(display: &mut T) -> Result<(), String>
 }
 
 #[cfg(not(feature = "simulator"))]
-pub fn sensor<T: DrawTarget<BinaryColor>, I2C, D>(
-    display: &mut T,
+pub fn sensor<T1: DrawTarget<BinaryColor>, T2: DrawTarget<BinaryColor>, I2C, D>(
+    display: &mut T1,
+    chromatic_display: &mut T2,
     bme: &mut Bme680<I2C, D>,
 ) -> Result<(), String>
 where
@@ -53,7 +54,7 @@ where
         return Err(format!("Received bad sensor data: {:?}", data));
     }
 
-    draw_sensor(display, temp, humidity, pressure, gas);
+    draw_sensor(display, chromatic_display, temp, humidity, pressure, gas);
 
     sensor_to_influx(temp, humidity, pressure, gas);
 
@@ -61,14 +62,19 @@ where
 }
 
 #[cfg(feature = "epd4in2")]
-fn draw_sensor<T: DrawTarget<BinaryColor>>(
-    display: &mut T,
+fn draw_sensor<T1: DrawTarget<BinaryColor>, T2: DrawTarget<BinaryColor>>(
+    display: &mut T1,
+    chromatic_display: &mut T2,
     temp: f32,
     humidity: f32,
     pressure: f32,
     gas_resistance: u32,
 ) {
-    text_24x32(display, &format!("{:5.1}°C", temp), (0, 110).into());
+    text_24x32(
+        chromatic_display,
+        &format!("{:5.1}°C", temp),
+        (0, 110).into(),
+    );
     text_8x16(
         display,
         &format!(
@@ -82,8 +88,9 @@ fn draw_sensor<T: DrawTarget<BinaryColor>>(
 }
 
 #[cfg(feature = "epd2in9")]
-fn draw_sensor<T: DrawTarget<BinaryColor>>(
-    display: &mut T,
+fn draw_sensor<T1: DrawTarget<BinaryColor>, T2: DrawTarget<BinaryColor>>(
+    display: &mut T1,
+    chromatic_display: &mut T2,
     temp: f32,
     humidity: f32,
     pressure: f32,
@@ -106,16 +113,17 @@ fn draw_sensor<T: DrawTarget<BinaryColor>>(
     );
 }
 
-#[cfg(feature = "epd7in5")]
-fn draw_sensor<T: DrawTarget<BinaryColor>>(
-    display: &mut T,
+#[cfg(feature = "epd7in5bc")]
+fn draw_sensor<T1: DrawTarget<BinaryColor>, T2: DrawTarget<BinaryColor>>(
+    display: &mut T1,
+    chromatic_display: &mut T2,
     temp: f32,
     humidity: f32,
     pressure: f32,
     gas_resistance: u32,
 ) {
     text_24x32(
-        display,
+        chromatic_display,
         &format!("{:5.1}°C", temp),
         (width() - 7 * 26, 110).into(),
     );
